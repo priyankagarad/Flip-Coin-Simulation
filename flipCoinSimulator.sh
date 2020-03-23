@@ -4,82 +4,64 @@ echo "Flip Coin Simulation"
 #declare dictionary
 declare -A dictionary
 
-#VARIABLE
-HHH=0
-HHT=0
-TTT=0
-TTH=0
-THT=0
-HTT=0
-THH=0
-HTH=0
-flip=0
+HEAD=0
+TAIL=1
 
-read -p "enter number of time coin toss:" number
-#triplet combination
-while [ $flip -lt 10 ]
-do
-	coin1=$((RANDOM%2))
-	coin2=$((RANDOM%2))
-	coin3=$((RANDOM%2))
-	if [[ $coin1 -eq 1 && $coin2 -eq 1 && $coin3 -eq 1 ]]
-	then
-		((HHH++))
+random=$((RANDOM%2))
 
-	elif [[ $coin1 -eq 1 && $coin2 -eq 1 && $coin3 -eq 0 ]]
-	then
-		((HHT++))
+if [ $random -eq $HEAD ]
+then
+   printf "Head"
+else
+	printf "Tail"
+fi
 
-	elif [[ $coin1 -eq 1 && $coin2 -eq 0 && $coin3 -eq 1 ]]
-	then
-		((HTH++))
+# Combinations of  coin
+function combination(){
+	for (( i=0; i<$1; i++ ))
+	do
+		string=""
+      for (( j=0; j<$2; j++ ))
+      do
+         random=$((RANDOM%2))
+         if [ $random -eq $HEAD ]
+         then
+            string+=H
+         else
+            string+=T
+         fi
+		done
+      dictionary[$string]=$(( ${dictionary[$string]}+1 ))
+	done
+   echo "All Combination : ${dictionary[@]}"
+   echo  "All keys : ${!dictionary[@]}"
+}
 
-	elif [[ $coin1 -eq 0 && $coin2 -eq 1 && $coin3 -eq 1 ]]
-	then
-		((THH++))
+#find percentage
+function percentageFind(){
+   for keys in ${!dictionary[@]}
+   {
+      persentage=`echo "scale=2; $((${dictionary[$keys]}))/$flipCoin*100" | bc`
+      echo  "$keys =  $persentage"
+   }
+}
+read -p  "How many time you flip coin" flipCoin
+read -p "Combination Single press for singlet_combination 1) double press for doublet_combination 2) third press for triplet_combination 3)" choice
 
-   elif [[ $coin1 -eq 0 && $coin2 -eq 1 && $coin3 -eq 0 ]]
-	then
-		((THT++))
-
-   elif [[ $coin1 -eq 0 && $coin2 -eq 0 && $coin3 -eq 0 ]]
-   then
-		((TTT++))
-
-   elif [[ $coin1 -eq 0 && $coin2 -eq 0 && $coin3 -eq 1 ]]
-   then
-   	((TTH++))
-
-   else
-		((HTT++))
-   fi
-	((flip++))
-done
-
-#add value in dictionary
-dictionary[0]=$HHH
-dictionary[1]=$HHT
-dictionary[2]=$HTH
-dictionary[3]=$THH
-dictionary[4]=$THT
-dictionary[5]=$TTT
-dictionary[6]=$TTH
-dictionary[7]=$HTT
-echo "${!dictionary[@]}"
-echo "${dictionary[@]}"
-
-#percentage of triplet
-result1=`echo "scale=2; $HHH*100/10" | bc `
-result2=`echo "scale=2; $HHT*100/10" | bc `
-result3=`echo "scale=2; $HTH*100/10" | bc `
-result4=`echo "scale=2; $THH*100/10" | bc `
-result5=`echo "scale=2; $THT*100/10" | bc `
-result6=`echo "scale=2; $TTT*100/10" | bc `
-result7=`echo "scale=2; $TTH*100/10" | bc `
-result8=`echo "scale=2; $HTT*100/10" | bc `
-
-
-
-
-
+# Check choice 
+if [ $choice -eq 1 ]
+then
+   combination $flipCoin $choice
+   percentageFind
+elif [ $choice -eq 2 ]
+then
+   combination $flipCoin $choice
+   percentageFind
+elif [ $choice  -eq 3 ]
+then
+   combination $flipCoin $choice
+   percentageFind
+else
+   printf "Please Enter a Right Choice" 
+fi
 
