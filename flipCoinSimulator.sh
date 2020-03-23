@@ -1,5 +1,10 @@
 #!/bin/bash -x
-echo "Flip Coin Simulation"
+echo " Welcome Flip Coin Simulation"
+
+#declare dictionary
+declare -A dictionary
+
+#check head or tail
 coin=$((RANDOM%2))
 if [[ $coin -eq 1 ]]
 then
